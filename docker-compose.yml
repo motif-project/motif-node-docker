@@ -1,0 +1,45 @@
+version: '3.1'
+
+services:
+
+    postgres_container:
+        container_name: "postgres_container"
+        image: postgres:12
+        restart: unless-stopped
+        ports:
+            - "5442:5432"
+        volumes:
+            - ./schema/operator.sql:/docker-entrypoint-initdb.d/operator.sql
+            - ./psql/data:/var/lib/postgresql/data
+        environment:
+            LC_ALL: C.UTF-8
+            POSTGRES_USER: user1
+            POSTGRES_PASSWORD: password1
+            POSTGRES_DB: databasename
+        networks:
+            - network_conn
+
+    bitdsm:
+        container_name: "bitdsm"
+        build:
+          context: ./
+          dockerfile: ./Dockerfile
+        ports:
+            - "8080:8080"
+        expose:
+            - "8080"
+        volumes: 
+        - ./bitdsm/data:/app/wallet/
+        - ./configs:/app/BitDSM-Node/configs/
+        command : ["./wait_for_it.sh", "postgres:5432", "--", "./bitdsm_entrypoint.sh"]
+        networks:
+            - network_conn
+        environment:
+            - DATABASE_URL=databasename://user:password@postgres_container/databasename
+        depends_on:
+            - postgres_container
+        links:
+            - postgres_container
+        
+networks:
+  network_conn:
