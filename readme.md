@@ -1,6 +1,6 @@
-# BitDSM Deployment Guide
+# Motif Deployment Guide
 
-This guide provides instructions on how to deploy the BitDSM application using Docker and Docker Compose.
+This guide provides instructions on how to deploy the Motif application using Docker and Docker Compose.
 
 ## Prerequisites
 
@@ -76,7 +76,7 @@ Before you begin, ensure you have the following tasks are done:
 
     - **opr_metadata_uri**: The URI for operator metadata.
     - **eigen_delegation_manager_address**: The Ethereum address of the Eigen Delegation Manager contract.
-    - **bitdsm_registry_address**: The Ethereum address of the BitDSM Registry contract. 
+    - **motif_registry_address**: The Ethereum address of the Motif Registry contract. 
     - **service_manager_address**: The Ethereum address of the Service Manager contract. 
     - **eigen_avs_directory_address**: The Ethereum address of the Eigen AVS Directory 
     - **pod_manager_address**: The Ethereum address of the Pod Manager contract.
@@ -85,9 +85,9 @@ Before you begin, ensure you have the following tasks are done:
 
 - When Docker is initialized it mounts postgres db volume to `./psql/data` folder on your local machine. This folder should not be replaced or moved. 
 
-- When Docker is initialized it look for an Eth wallet. If not found, a new  Eth Wallet is created and is stored at `.bitdsm/data` folder on the local machine. Please keep a backup of this folder. If you already have a keystore you want to use, copy the keystore file at the same location `./bitdsm/data`
+- When Docker is initialized it look for an Eth wallet. If not found, a new  Eth Wallet is created and is stored at `.motif/data` folder on the local machine. Please keep a backup of this folder. If you already have a keystore you want to use, copy the keystore file at the same location `./motif/data`
 
-- In case you want to create a new wallet, simply move the keystore file from `./bitdsm/data`on local machine to another folder. this will create a new wallet upon restarting the docker container.
+- In case you want to create a new wallet, simply move the keystore file from `./motif/data`on local machine to another folder. this will create a new wallet upon restarting the docker container.
 
 ## Running
 

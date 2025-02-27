@@ -3,11 +3,11 @@ RUN apk add --no-cache git
 RUN apk add --no-cache git bash
 WORKDIR /app
 COPY wait_for_it.sh wait_for_it.sh
-COPY bitdsm_entrypoint.sh bitdsm_entrypoint.sh
+COPY motif_entrypoint.sh motif_entrypoint.sh
 RUN chmod +x wait_for_it.sh
 RUN chmod +x bitdsm_entrypoint.sh
-RUN git clone --branch release https://github.com/BitDSM/BitDSM-Node.git
-WORKDIR /app/BitDSM-Node
+RUN git clone --branch release https://github.com/motif-project/motif-node.git
+WORKDIR /app/Motif-Node
 RUN go mod tidy
 RUN go build .
 WORKDIR /app
