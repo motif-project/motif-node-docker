@@ -1,2 +1,2 @@
-cd Motif-Node
+cd motif-node
 go run main.go

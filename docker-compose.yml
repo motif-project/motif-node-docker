@@ -30,7 +30,7 @@ services:
             - "8080"
         volumes: 
         - ./bitdsm/data:/app/wallet/
-        - ./configs:/app/Motif-Node/configs/
+        - ./configs:/app/motif-node/configs/
         command : ["./wait_for_it.sh", "postgres:5432", "--", "./motif_entrypoint.sh"]
         networks:
             - network_conn
