@@ -1,5 +1,9 @@
 {
     "env": "dev",
+    "opr_name": "operator Name",
+    "opr_logo_uri": "https://www.example.com/logo.png",
+    "opr_ip_address": "1.0.0.0",
+
     "DB_port": "5432",
     "DB_host": "postgres_container",
     "DB_user": "user1",
