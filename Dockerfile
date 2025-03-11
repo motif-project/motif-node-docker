@@ -5,7 +5,7 @@ WORKDIR /app
 COPY wait_for_it.sh wait_for_it.sh
 COPY motif_entrypoint.sh motif_entrypoint.sh
 RUN chmod +x wait_for_it.sh
-RUN chmod +x bitdsm_entrypoint.sh
+RUN chmod +x motif_entrypoint.sh
 RUN git clone --branch release https://github.com/motif-project/motif-node.git
 WORKDIR /app/Motif-Node
 RUN go mod tidy

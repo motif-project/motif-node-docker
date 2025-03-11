@@ -19,7 +19,7 @@ services:
         networks:
             - network_conn
 
-    bitdsm:
+    motif:
         container_name: "motif"
         build:
           context: ./
@@ -29,7 +29,7 @@ services:
         expose:
             - "8080"
         volumes: 
-        - ./bitdsm/data:/app/wallet/
+        - ./motif/data:/app/wallet/
         - ./configs:/app/motif-node/configs/
         command : ["./wait_for_it.sh", "postgres:5432", "--", "./motif_entrypoint.sh"]
         networks:
