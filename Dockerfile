@@ -7,7 +7,7 @@ COPY motif_entrypoint.sh motif_entrypoint.sh
 RUN chmod +x wait_for_it.sh
 RUN chmod +x motif_entrypoint.sh
 RUN git clone --branch release https://github.com/motif-project/motif-node.git
-WORKDIR /app/Motif-Node
+WORKDIR /app/motif-node
 RUN go mod tidy
 RUN go build .
 WORKDIR /app
