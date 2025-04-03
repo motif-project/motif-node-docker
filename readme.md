@@ -30,6 +30,8 @@ Before you begin, ensure you have the following tasks are done:
         "DB_name" : "databasename",
     ``` 
 
+    If you are using postgres running inside a docker container (as in this setup) please don't use `localhost` as `db_host` in motif config file. It should be the container name, in this setup it is `postgres_contianer`.
+
 
 2. ### Application Configuration
 
@@ -88,6 +90,11 @@ Before you begin, ensure you have the following tasks are done:
 - When Docker is initialized it look for an Eth wallet. If not found, a new  Eth Wallet is created and is stored at `.motif/data` folder on the local machine. Please keep a backup of this folder. If you already have a keystore you want to use, copy the keystore file at the same location `./motif/data`
 
 - In case you want to create a new wallet, simply move the keystore file from `./motif/data`on local machine to another folder. this will create a new wallet upon restarting the docker container.
+
+- Applications running inside the docker container, can access the internet and other docker container. but cannot directly access physical machine's localhost. to do that follow thw below steps. 
+
+    1. If you are using a MAC or Windows machine use `host.docker.internal` as host, in order to access physical machine's localhost
+    2. If you are using a linux system run the command `ip addr show docker0` on the terminal. this will give you the IP address docker has assigned to the local machine in its internal network. use this IP as host to connect to local machine.
 
 ## Running
 
