@@ -8,7 +8,7 @@ Before you begin, ensure you have the following tasks are done:
 
 - Install Docker
 - Install Docker Compose
-- Access to full bitcoin Node with tx indexing enabled
+- Access to full bitcoin Node with tx indexing enabled (if you want, btc node can be run using dockers. [Here](https://hub.docker.com/r/bitcoin/bitcoin) are the steps to do so.)
 - Access to a stand alone (not connected to the BTC chain) BTC Node with only the BTC wallet running
 
 ## Configuration
@@ -105,5 +105,4 @@ Before you begin, ensure you have the following tasks are done:
 ```
 
 - In case you are starting the system with a new Eth wallet. You will see an Eth Account printed on the terminal and the system will halt with an error stating `insufficient funds`. simply add some funds in the shared address and run the above command again.
-
 
