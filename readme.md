@@ -1,108 +1,121 @@
 # Motif Deployment Guide
 
-This guide provides instructions on how to deploy the Motif application using Docker and Docker Compose.
+This guide provides comprehensive instructions for deploying the Motif application using Docker and Docker Compose.
+
+---
 
 ## Prerequisites
 
-Before you begin, ensure you have the following tasks are done:
+Before starting, ensure the following prerequisites are met:
 
-- Install Docker
-- Install Docker Compose
-- Access to full bitcoin Node with tx indexing enabled (if you want, btc node can be run using dockers. [Here](https://hub.docker.com/r/bitcoin/bitcoin) are the steps to do so.)
-- Access to a stand alone (not connected to the BTC chain) BTC Node with only the BTC wallet running
+- **Docker**: Installed and configured.
+- **Docker Compose**: Installed and configured.
+- **Bitcoin Node**: 
+  - Access to a full Bitcoin Node with transaction indexing enabled. (Optional: Run a Bitcoin Node using Docker. Follow the [official guide](https://hub.docker.com/r/bitcoin/bitcoin).)
+  - Access to a standalone Bitcoin Node with only the Bitcoin wallet running (not connected to the BTC chain).
+
+---
 
 ## Configuration
 
-1. ### Database Configuration
+### 1. Database Configuration
 
-   Update the connection parameters in the Docker-compose.yml as needed.
-    ```yaml
-        POSTGRES_USER: user1
-        POSTGRES_PASSWORD: password1
-        POSTGRES_DB: databasename
-    ```
-
-    Also ensure that you update the configs/config.json file with the same parameters.
-
-    ```json
-        "DB_user": "user1",
-        "DB_password" : "password1",
-        "DB_name" : "databasename",
-    ``` 
-
-    If you are using postgres running inside a docker container (as in this setup) please don't use `localhost` as `db_host` in motif config file. It should be the container name, in this setup it is `postgres_contianer`.
-
-
-2. ### Application Configuration
-
-   The `config.json` file contains the configuration settings for the application. Ensure that the database connection details and other settings are correctly specified. 
-
-   #### General Configuration
-
-    - **env**: Specifies the environment in which the application is running. acceptable values are `dev`, `prod`.
-
-    #### Database Configuration
-
-    - **DB_port**: The port number on which the PostgreSQL database is running.
-    - **DB_host**: The hostname or IP address of the PostgreSQL database. In this case, it is set to `postgres_container`, which is the name of the PostgreSQL service in the Docker Compose setup.
-    - **DB_user**: The username for connecting to the PostgreSQL database.
-    - **DB_password**: The password for the PostgreSQL user.
-    - **DB_name**: The name of the PostgreSQL database.
-
-    #### Bitcoin Node Configuration
-
-    - **btc_node_host**: The hostname or IP address and port of the Bitcoin node.
-    - **btc_node_user**: The username for authenticating with the Bitcoin node.
-    - **btc_node_pass**: The password for the Bitcoin node user.
-    - **btc_node_protocol**: The protocol used to connect to the Bitcoin node. Here, it is `http://`.
-    - **fee_rate_adjustment**: A parameter to adjust the fee rate for Bitcoin transactions, Incase we want to prioritize tx.
-    - **wallet_name**: The name of the Bitcoin online wallet used by the application. which is connected to the Btc Chain
-    - **btc_xpublic_key**: The extended public key for the Bitcoin wallet. This key is used to derive addresses for receiving Bitcoin.
-
-    #### Multisig Wallet Configuration
-
-    - **multisig_signing_wallet_name**: The name of the multisig offline signing wallet. 
-    - **multisig_btc_node**: The hostname or IP address and port of the Bitcoin node used for multisig offline transaction signing. 
-    - **multisig_btc_user**: The username for authenticating with the Bitcoin node used for multisig offline transaction signing. 
-    - **multisig_btc_pass**: The password for the Bitcoin node user used for  multisig offline transaction signing. 
-    - **multisig_btc_protocol**: The protocol used to connect to the Bitcoin node for  multisig offline transaction signing. Here, it is `http://`.
-
-    #### Ethereum Configuration
-
-    - **eth_rpc_host**: The RPC endpoint for connecting to the Ethereum network.
-    - **eth_ws_host**: The WebSocket endpoint for connecting to the Ethereum network. 
-    - **eth_keystore_dir**: The directory where the Ethereum keystore files are stored. 
-    - **eth_keystore_passphrase**: The passphrase for the Ethereum keystore.
-
-    #### Smart Contract Addresses
-
-    - **opr_metadata_uri**: The URI for operator metadata.
-    - **eigen_delegation_manager_address**: The Ethereum address of the Eigen Delegation Manager contract.
-    - **motif_registry_address**: The Ethereum address of the Motif Registry contract. 
-    - **service_manager_address**: The Ethereum address of the Service Manager contract. 
-    - **eigen_avs_directory_address**: The Ethereum address of the Eigen AVS Directory 
-    - **pod_manager_address**: The Ethereum address of the Pod Manager contract.
-
-## KeyPoints to Consider
-
-- When Docker is initialized it mounts postgres db volume to `./psql/data` folder on your local machine. This folder should not be replaced or moved. 
-
-- When Docker is initialized it look for an Eth wallet. If not found, a new  Eth Wallet is created and is stored at `.motif/data` folder on the local machine. Please keep a backup of this folder. If you already have a keystore you want to use, copy the keystore file at the same location `./motif/data`
-
-- In case you want to create a new wallet, simply move the keystore file from `./motif/data`on local machine to another folder. this will create a new wallet upon restarting the docker container.
-
-- Applications running inside the docker container, can access the internet and other docker container. but cannot directly access physical machine's localhost. to do that follow thw below steps. 
-
-    1. If you are using a MAC or Windows machine use `host.docker.internal` as host, in order to access physical machine's localhost
-    2. If you are using a linux system run the command `ip addr show docker0` on the terminal. this will give you the IP address docker has assigned to the local machine in its internal network. use this IP as host to connect to local machine.
-
-## Running
-
-- Run the below command to start the docker
-
-```shell
-    docker-compose up
+Update the connection parameters in the `docker-compose.yml` file as needed:
+```yaml
+POSTGRES_USER: user1
+POSTGRES_PASSWORD: password1
+POSTGRES_DB: databasename
 ```
 
-- In case you are starting the system with a new Eth wallet. You will see an Eth Account printed on the terminal and the system will halt with an error stating `insufficient funds`. simply add some funds in the shared address and run the above command again.
+Ensure the same parameters are updated in the `configs/config.json` file:
+```json
+"DB_user": "user1",
+"DB_password": "password1",
+"DB_name": "databasename"
+```
 
+> **Note**: If using PostgreSQL inside a Docker container, do not use `localhost` as the `db_host` in the Motif configuration file. Instead, use the container name (e.g., `postgres_container`).
+
+---
+
+### 2. Application Configuration
+
+The `config.json` file contains all application settings. Ensure the following configurations are correctly specified:
+
+#### General Configuration
+- **env**: Specifies the environment (`dev` or `prod`).
+
+#### Database Configuration
+- **DB_port**: Port number for the PostgreSQL database.
+- **DB_host**: Hostname or container name (e.g., `postgres_container`).
+- **DB_user**: Database username.
+- **DB_password**: Database password.
+- **DB_name**: Database name.
+
+#### Bitcoin Node Configuration
+- **btc_node_host**: Hostname and port of the Bitcoin node.
+- **btc_node_user**: Username for Bitcoin node authentication.
+- **btc_node_pass**: Password for Bitcoin node authentication.
+- **btc_node_protocol**: Protocol (e.g., `http://`).
+- **fee_rate_adjustment**: Adjusts Bitcoin transaction fee rates.
+- **wallet_name**: Name of the Bitcoin online wallet.
+- **btc_xpublic_key**: Extended public key for deriving Bitcoin addresses.
+
+#### Multisig Wallet Configuration
+- **multisig_signing_wallet_name**: Name of the multisig offline signing wallet.
+- **multisig_btc_node**: Hostname and port of the Bitcoin node for multisig signing.
+- **multisig_btc_user**: Username for multisig Bitcoin node authentication.
+- **multisig_btc_pass**: Password for multisig Bitcoin node authentication.
+- **multisig_btc_protocol**: Protocol (e.g., `http://`).
+
+#### Ethereum Configuration
+- **eth_rpc_host**: RPC endpoint for Ethereum network.
+- **eth_ws_host**: WebSocket endpoint for Ethereum network.
+- **eth_keystore_dir**: Directory for Ethereum keystore files.
+- **eth_keystore_passphrase**: Passphrase for the Ethereum keystore.
+
+#### Smart Contract Addresses
+- **opr_metadata_uri**: URI for operator metadata.
+- **eigen_delegation_manager_address**: Address of the Eigen Delegation Manager contract.
+- **motif_registry_address**: Address of the Motif Registry contract.
+- **service_manager_address**: Address of the Service Manager contract.
+- **eigen_avs_directory_address**: Address of the Eigen AVS Directory.
+- **pod_manager_address**: Address of the Pod Manager contract.
+
+---
+
+## Key Points to Consider
+
+- **PostgreSQL Volume**: Docker mounts the PostgreSQL database volume to `./psql/data`. Do not replace or move this folder.
+- **Ethereum Wallet**: 
+  - If no Ethereum wallet is found, a new wallet is created and stored in `./motif/data`. Backup this folder.
+  - To use an existing keystore, copy the keystore file to `./motif/data`.
+  - To create a new wallet, move the existing keystore file from `./motif/data` to another folder and restart the container.
+- **Accessing Localhost**:
+  - On macOS/Windows: Use `host.docker.internal` as the host.
+  - On Linux: Run `ip addr show docker0` to find the Docker-assigned IP for the local machine.
+
+---
+
+## Running the Application
+
+1. Start the Docker containers:
+   ```bash
+   docker-compose up
+   ```
+
+2. If starting with a new Ethereum wallet, the system will halt with an error (`insufficient funds`). Add funds to the printed Ethereum address and restart:
+   ```bash
+   docker-compose up
+   ```
+
+---
+
+## Additional Notes
+
+- Ensure all configurations are correctly set before starting the application.
+- Backup critical data such as Ethereum keystore files and PostgreSQL volumes.
+
+---
+
+This guide provides a structured and professional approach to deploying the Motif application. For further assistance, refer to the official documentation or contact support.
