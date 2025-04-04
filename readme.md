@@ -115,7 +115,3 @@ The `config.json` file contains all application settings. Ensure the following c
 
 - Ensure all configurations are correctly set before starting the application.
 - Backup critical data such as Ethereum keystore files and PostgreSQL volumes.
-
----
-
-This guide provides a structured and professional approach to deploying the Motif application. For further assistance, refer to the official documentation or contact support.
