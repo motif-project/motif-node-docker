@@ -1,6 +1,8 @@
 # Motif Deployment Guide
 
-This guide provides comprehensive instructions for deploying the Motif application using Docker and Docker Compose.
+This guide provides comprehensive instructions for deploying the Motif application using Docker and Docker Compose. Motif testnet is based on Holesky(eth testnet) and signet(btc).
+
+The Operator Node communicates with Motif core contracts deployed on holesky. [here](https://github.com/Layr-Labs/eigenlayer-contracts/tree/testnet-holesky?tab=readme-ov-file#current-testnet-deployment) are the latest contract addresses and furthur details on these contracts.
 
 ---
 
@@ -13,6 +15,9 @@ Before starting, ensure the following prerequisites are met:
 - **Bitcoin Node**: 
   - Access to a full Bitcoin Node with transaction indexing enabled. (Optional: Run a Bitcoin Node using Docker. Follow the [official guide](https://hub.docker.com/r/bitcoin/bitcoin) or [install without docker.](https://bitcoin.org/en/full-node)). Ensure That the `.bitcoin.conf` file has `signet=1` and `index=1` values.
   - Access to a standalone Bitcoin Node with only the Bitcoin wallet running (not connected to the BTC chain).
+
+- **Ethereum Holesky server**:
+    - Access to ethereum Holesky server. you can either deploy your own node or use infura, alchemy or anyother such service.
 
 ---
 
