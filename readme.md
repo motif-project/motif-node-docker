@@ -4,6 +4,8 @@ This guide provides comprehensive instructions for deploying the Motif applicati
 
 The Operator Node communicates with Motif core contracts deployed on holesky. [here](https://github.com/Layr-Labs/eigenlayer-contracts/tree/testnet-holesky?tab=readme-ov-file#current-testnet-deployment) are the latest contract addresses and furthur details on these contracts.
 
+This setup runs Bitcoin Signet node and runs it inside the container.
+
 ---
 
 ## Prerequisites
@@ -13,30 +15,29 @@ Before starting, ensure the following prerequisites are met:
 - **Docker**: Installed and configured. Please refer to [docker installation guide](https://docs.docker.com/engine/install/)
 - **Docker Compose**: Installed and configured. Please refer to [docker installation guide](https://docs.docker.com/engine/
 - **Bitcoin Node**: 
-  - Access to a full Bitcoin Node with transaction indexing enabled. (Optional: Run a Bitcoin Node using Docker. Follow the [official guide](https://hub.docker.com/r/bitcoin/bitcoin) or [install without docker.](https://bitcoin.org/en/full-node)). Ensure That the `.bitcoin.conf` file has `signet=1` and `index=1` values.
-  - Access to a standalone Bitcoin Node with only the Bitcoin wallet running (not connected to the BTC chain).
+  - Access to a full Bitcoin Node with transaction indexing enabled. This setup runs the Bitcoin Signet node in docker container. It also creates two wallets named `motifOnline` and `motifOnline`. The names of these wallets can be changed in the [btc_entrypoint.sh]() file.
 
 - **Ethereum Holesky server**:
-    - Access to ethereum Holesky server. you can either deploy your own node or use infura, alchemy or anyother such service.
+    - Access to ethereum Holesky server. you can either deploy your own node or use infura, alchemy or anyother such service. 
 
 ---
 
 ## Configuration
 
-### 1. BTC Offline wallet setup 
+### 1.1 BTC Offline wallet setup 
 
-We recommend using an instance of [bitcoin-core] (https://bitcoin.org/en/releases/27.0/) configured in the Offline signing wallet mode.The Bitcoin Core wallet is the preferred choice because it enables clients to utilize external signers and boasts a long-standing, rigorously tested codebase.
+We recommend using an instance of [bitcoin-core] (https://bitcoin.org/en/releases/27.0/) configured in the Offline signing wallet mode. The Bitcoin Core wallet is the preferred choice because it enables clients to utilize external signers and boasts a long-standing, rigorously tested codebase.
 
 For ensuring wallet security, it is strongly recommended to use a separate host system with atleast 4 GB RAM and 2 GB available storage space. The system should be completely disconnected from all public networks (internet, tor, wifi etc.). The `offline` wallet host is not required to download or synchronize blockchain data.
 
-The offline wallet should be setup as a server as part of a secured private network where, the wallet is only accessible through a designated rpc connection with `btc-oracle`. To ensure the integrity and security of the data, only `TLS` based rpc connection should be allowed between `btc-oracle` and the offline wallet node. 
+The offline wallet should be setup as a server as part of a secured private network where, the wallet is only accessible through a designated rpc connection with `btc-oracle`. 
 
-### 1.1 Installation
+### 1.2 Installation
 
 Download and install the bitcoin binaries according to your operating systemfrom the official [Bitcoind Core registry](https://bitcoincore.org/bin/bitcoin-core-27.0/). All programs in this guide are compatible with version `27.0`.
 
-### 1.2 Configuration
-`bitcoind` instance can be configured by using a `bitcoin.conf` file. In `Linux` based systems the file is found in `/home/<username>/.bitcoin`.
+### 1.3 Configuration
+`bitcoind` instance can be configured by using a `bitcoin.conf` file. In `Linux` based systems the file is found in `/home/<username>/.bitcoin`. In our docker setup you can make changes in this `bitcoin.conf` file and these settings will be reflected in the docker container when the docker container is build. It is suggested that you update `rpcuser` and `rpcpassword`, used for rpc connection. 
 
 A sample configuration file with recommended settings is as follows
 ```shell
@@ -68,14 +69,14 @@ JSON-RPC connection authentication can be configured to use `rpc-username`:`rpc-
 
 ### 2. Database Configuration
 
-Update the connection parameters in the `docker-compose.yml` file as needed:
+Update the connection parameters in the [`docker-compose.yml`](https://github.com/motif-project/motif-node-docker/blob/main/docker-compose.yml) file as needed:
 ```yaml
 POSTGRES_USER: user1
 POSTGRES_PASSWORD: password1
 POSTGRES_DB: databasename
 ```
 
-Ensure the same parameters are updated in the `configs/config.json` file:
+Ensure the same parameters are updated in the [`configs/config.json`](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.json) file:
 ```json
 "DB_user": "user1",
 "DB_password": "password1",
@@ -88,7 +89,7 @@ Ensure the same parameters are updated in the `configs/config.json` file:
 
 ### 3. Application Configuration
 
-The [`config.json`](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.json) file contains all application settings. Refer to the [config.md](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.md) file to see details on the configurations. 
+The [`config.json`](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.json) file contains all application settings. Refer to the [config.md](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.md) file to see details on these configurations. 
 
 Make the changes in the [config.json](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.json) file. This file will be used when we create the docker container. 
 
@@ -104,8 +105,11 @@ Please ensure that the system is properly configured before running the docker.
   - To use an existing keystore, copy the keystore file to `./motif/data`.
   - To create a new wallet, move the existing keystore file from `./motif/data` to another folder and restart the container.
 - **Accessing Localhost**:
+  - To Access localhost from within the Docker Container use the following.
   - On macOS/Windows: Use `host.docker.internal` as the host.
-  - On Linux: Run `ip addr show docker0` to find the Docker-assigned IP for the local machine.
+  - On Linux: Run `ip addr show docker0` to find the Docker-assigned IP for the local machine and use that ip as host in docker container.
+= **Bitcoin Wallet**:
+  - All signet data including wallets is saved in `./btc/data/signet` folder. Do not replace or move this folder, otherwise Docker will start the IBD process again and will create new btc wallets.
 
 ---
 
@@ -118,10 +122,19 @@ Please ensure that the system is properly configured before running the docker.
    docker-compose up
    ```
 
-2. If starting with a new Ethereum wallet, the system will halt with an error (`insufficient funds`). Add funds to the printed Ethereum address and restart:
-   ```bash
-   docker-compose up
-   ```
+2. If starting with a new Ethereum wallet and BTC Wallet, the system will halt with an error (`insufficient funds`). follow the below steps.
+   - Before the system exits it will display xpub/tpub keys from your offline signing wallets. copy the second last xpub/tup key. it will look like the key shared below, Please do not use the one provided below.
+
+    ```
+    [9f8c4e0f/84h/0h/0h]xpub6CnorznhQcJDGX47CjYLLoSouDq5ViucAUKknA2M4tDyLUXmTLNE3mzN9vgsQzrv3ZGF2dstz7KccK6oaan6UfUpeFxrEkNxY7pT7atpTpK/0/*
+    ``` 
+
+   - Before the system exits it will also display operators new ethereum address. Please use any [holesky faucet](https://cloud.google.com/application/web3/faucet/ethereum/holesky) to add funds to it.
+
+   - Restart the system. 
+    ```bash
+    docker-compose up
+    ```
 
 ---
 
