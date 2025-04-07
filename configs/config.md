@@ -1,6 +1,11 @@
 #### General Configuration
 - **env**: Specifies the environment (`dev` or `prod`).
 
+#### Operator Configuration
+- ***opr_name***: Operator name.
+- ***opr_logo_uri***: Publicly accessible link to operator logo png.
+- ***opr_ip_address***: Operator's public ip address 
+
 #### Database Configuration
 - **DB_port**: Port number for the PostgreSQL database.
 - **DB_host**: Hostname or container name (e.g., `postgres_container`).
