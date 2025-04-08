@@ -12,8 +12,7 @@ This setup runs Bitcoin Signet node and runs it inside the container.
 
 Before starting, ensure the following prerequisites are met:
 
-- **Docker**: Installed and configured. Please refer to [docker installation guide](https://docs.docker.com/engine/install/)
-- **Docker Compose**: Installed and configured. Please refer to [docker installation guide](https://docs.docker.com/engine/
+- **Docker** and **Docker Compose**: Installed and configured. Please refer to [docker docs](https://docs.docker.com/get-started/).
 - **Bitcoin Node**: 
   - Access to a full Bitcoin Node with transaction indexing enabled. This setup runs the Bitcoin Signet node in docker container. It also creates two wallets named `motifOnline` and `motifOnline`. The names of these wallets can be changed in the [btc_entrypoint.sh](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/btc_entrypoint.sh) file.
 
@@ -28,7 +27,7 @@ Before starting, ensure the following prerequisites are met:
 
 ### 1.1 BTC Offline wallet setup 
 
-We recommend using an instance of [bitcoin-core] (https://bitcoin.org/en/releases/27.0/) configured in the Offline signing wallet mode. The Bitcoin Core wallet is the preferred choice because it enables clients to utilize external signers and boasts a long-standing, rigorously tested codebase.
+We recommend using an instance of [bitcoin-core](https://bitcoin.org/en/releases/27.0/) configured in the Offline signing wallet mode. The Bitcoin Core wallet is the preferred choice because it enables clients to utilize external signers and boasts a long-standing, rigorously tested codebase.
 
 For ensuring wallet security, it is strongly recommended to use a separate host system with atleast 4 GB RAM and 2 GB available storage space. The system should be completely disconnected from all public networks (internet, tor, wifi etc.). The `offline` wallet host is not required to download or synchronize blockchain data.
 
