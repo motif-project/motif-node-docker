@@ -14,8 +14,9 @@ Before starting, ensure the following prerequisites are met:
 
 - **Docker** and **Docker Compose**: Installed and configured. Please refer to [docker docs](https://docs.docker.com/get-started/).
 - **Bitcoin Node**: 
-  - Access to a full Bitcoin Node with transaction indexing enabled. This setup runs the Bitcoin Signet node in docker container. It also creates two wallets named `motifOnline` and `motifOnline`. The names of these wallets can be changed in the [btc_entrypoint.sh](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/btc_entrypoint.sh) file.
-
+  - Access to a full Bitcoin Node with transaction indexing enabled. 
+  - You can run `docker compose up`, this will setup a bitcoin node in a docker container. It also creates two wallets named `motifOnline` and `motifOffline` on the bitcoin node. 
+  - The names of these wallets can be changed in the [btc_entrypoint.sh](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/btc_entrypoint.sh) file.
   - You can also use your own Bitcoin node, just update the motif config file accordingly.
 
 - **Ethereum Holesky server**:
@@ -35,10 +36,10 @@ The offline wallet should be setup as a server as part of a secured private netw
 
 ### 1.2 Installation
 
-Download and install the bitcoin binaries according to your operating systemfrom the official [Bitcoind Core registry](https://bitcoincore.org/bin/bitcoin-core-27.0/). All programs in this guide are compatible with version `27.0`.
+Download and install the bitcoin node according to your operating system from the official [Bitcoind Core registry](https://bitcoincore.org/bin/bitcoin-core-27.0/). All programs in this guide are compatible with version `27.0`. 
 
 ### 1.3 Configuration
-`bitcoind` instance can be configured by using a `bitcoin.conf` file. In `Linux` based systems the file is found in `/home/<username>/.bitcoin`. In our docker setup you can make changes in this [`bitcoin.conf`](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/data/bitcoin.conf) file and these settings will be reflected in the docker container when the docker container is build. It is suggested that you update `rpcuser` and `rpcpassword`, used for rpc connection. 
+`bitcoind` is a daemon installed with bitcoin node, it can be configured by using a `bitcoin.conf` file. In `Linux` based systems the file is found in `/home/<username>/.bitcoin`. In our docker setup you can make changes in this [`bitcoin.conf`](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/data/bitcoin.conf) file and these settings will be reflected in the docker container when the docker container is build. It is suggested that you update `rpcuser` and `rpcpassword`, used for rpc connection. 
 
 A sample configuration file with recommended settings is as follows
 ```shell
@@ -124,25 +125,53 @@ Please ensure that the system is properly configured before running the docker.
 
 ---
 
-## Running the Application
+## Step by step guide to run the Application
 
-Please ensure that the system is properly configured before running the docker. 
+Please go through the below steps, after ensuring pre requisites are met.
 
-1. Start the Docker containers:
+1. Start by updating the `rpcuser` and `rpcpassword` in the [bitcoin.conf](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/data/bitcoin.conf) file.
+
+2. If you want to change the wallet names update them in [btc_entrypoint.sh](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/btc_entrypoint.sh) file.
+    ```
+    WALLET_ONLINE="motifOnline"
+    WALLET_OFFLINE="motifOffline"
+    ```
+
+3. Depending on your machine's physical processor architecture, comment/uncomment the appropriate section in the bitcoin [Dockerfile](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/Dockerfile#L8) file. 
+
+4. Update the Database username, password and database name in the [docker-compose](https://github.com/motif-project/motif-node-docker/blob/btc-docker/docker-compose.yml#L30) file.
+    ```
+    POSTGRES_USER: user1
+    POSTGRES_PASSWORD: password1
+    POSTGRES_DB: databasename
+    ```
+
+5. Update the [config.json](https://github.com/motif-project/motif-node-docker/blob/btc-docker/configs/config.json) file as mentioned below.
+
+    - update the operator details.
+    - Database details. make sure the password, username and database name matches what was set in step 4.
+    - Bitcoin Node connection details. Only change the `btc_node_user`, `btc_node_pass` and `wallet_name`, and make sure that it matches what was set in step 1 and 2.
+    - Multisig signing wallet details. Only change `multisig_btc_user`, `multisig_btc_pass` and `multisig_signing_wallet_name`. If you are using the docker deployed btc node, username and password will be the same as step 1 and wallet name will be what you set up as `WALLET_OFFLINE` in step 2.
+    - In case you are using your btc wallet update the `btc_node_host` and `multisig_btc_node`.
+    - Update the password for the Ethwallet `eth_keystore_passphrase`.
+
+6. Start the Docker containers:
    ```bash
    docker-compose up
    ```
 
-2. If starting with a new Ethereum wallet and BTC Wallet, the system will halt with an error `insufficient funds`. follow the below steps.
+7. If starting with a new Ethereum wallet and BTC Wallet, the system will halt with an error `insufficient funds`. follow the below steps.
    - Before the system exits it will display xpub/tpub keys from your offline signing wallets. copy the second last xpub/tup key. it will look like the key shared below, Please do not use the one provided below.
 
-    ```
-    [9f8c4e0f/84h/0h/0h]xpub6CnorznhQcJDGX47CjYLLoSouDq5ViucAUKknA2M4tDyLUXmTLNE3mzN9vgsQzrv3ZGF2dstz7KccK6oaan6UfUpeFxrEkNxY7pT7atpTpK/0/*
-    ``` 
+      ```
+      [9f8c4e0f/84h/0h/0h]xpub6CnorznhQcJDGX47CjYLLoSouDq5ViucAUKknA2M4tDyLUXmTLNE3mzN9vgsQzrv3ZGF2dstz7KccK6oaan6UfUpeFxrEkNxY7pT7atpTpK/0/*
+      ``` 
 
    - Before the system exits it will also display operators new ethereum address. Please use any [holesky faucet](https://cloud.google.com/application/web3/faucet/ethereum/holesky) to add funds to it.
 
-   - Restart the system. 
+8. update the `btc_xpublic_key` field in the [config.json](https://github.com/motif-project/motif-node-docker/blob/btc-docker/configs/config.json)) file. Make sure the value is the same as what you get in step 7.
+
+9. Restart the system. 
     ```bash
     docker-compose up
     ```
