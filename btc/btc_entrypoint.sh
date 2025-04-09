@@ -8,8 +8,8 @@ WALLET_OFFLINE="motifOffline"
 bitcoind --daemon
 
 # Wait for 3 minutes (180 seconds) to allow the Bitcoin daemon to initialize
-echo "Waiting for 3 minutes to allow Bitcoin daemon to initialize..."
-sleep 180
+echo "Waiting for 1 minutes to allow Bitcoin daemon to initialize..."
+sleep 60
 
 # Check if the online wallet exists, and create it if it doesn't
 if ! bitcoin-cli loadwallet "$WALLET_ONLINE" | grep -q "verification failed"; then
