@@ -1,7 +1,21 @@
-version: '3.1'
-
 services:
 
+    bitcoin:
+        container_name: "bitcoin"
+        build:
+          context: ./
+          dockerfile: ./btc/Dockerfile
+        ports:
+            - "38332:38332"
+            - "38333:38333"
+        expose:
+            - "38332"
+            - "38333"
+        volumes:
+            - ./btc/data:/root/.bitcoin/
+        command: ["./btc_entrypoint.sh"]
+        networks:
+            - network_conn
     postgres_container:
         container_name: "postgres_container"
         image: postgres:12
@@ -9,7 +23,7 @@ services:
         ports:
             - "5442:5432"
         volumes:
-            - ./schema/operator.sql:/docker-entrypoint-initdb.d/operator.sql
+            - ./psql/schema/operator.sql:/docker-entrypoint-initdb.d/operator.sql
             - ./psql/data:/var/lib/postgresql/data
         environment:
             LC_ALL: C.UTF-8
@@ -23,7 +37,7 @@ services:
         container_name: "motif"
         build:
           context: ./
-          dockerfile: ./Dockerfile
+          dockerfile: ./motif/Dockerfile
         ports:
             - "8080:8080"
         expose:
@@ -31,7 +45,7 @@ services:
         volumes: 
         - ./motif/data:/app/wallet/
         - ./configs:/app/motif-node/configs/
-        command : ["./wait_for_it.sh", "postgres:5432", "--", "./motif_entrypoint.sh"]
+        command : ["./wait_for_it.sh", "postgres_container:5432", "--", "./motif_entrypoint.sh"]
         networks:
             - network_conn
         environment:
@@ -43,3 +57,4 @@ services:
         
 networks:
   network_conn:
+    # external: true
