@@ -24,6 +24,59 @@ Before starting, ensure the following prerequisites are met:
 
 ---
 
+## Step by step guide to run the Application
+
+Please go through the below steps, after ensuring pre requisites are met.
+
+1. Start by updating the `rpcuser` and `rpcpassword` in the [bitcoin.conf](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/data/bitcoin.conf) file.
+
+2. If you want to change the wallet names update them in [btc_entrypoint.sh](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/btc_entrypoint.sh) file.
+    ```
+    WALLET_ONLINE="motifOnline"
+    WALLET_OFFLINE="motifOffline"
+    ```
+
+3. Depending on your machine's physical processor architecture, comment/uncomment the appropriate section in the bitcoin [Dockerfile](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/Dockerfile#L8) file. 
+
+4. Update the Database username, password and database name in the [docker-compose](https://github.com/motif-project/motif-node-docker/blob/btc-docker/docker-compose.yml#L30) file.
+    ```
+    POSTGRES_USER: user1
+    POSTGRES_PASSWORD: password1
+    POSTGRES_DB: databasename
+    ```
+
+5. Update the [config.json](https://github.com/motif-project/motif-node-docker/blob/btc-docker/configs/config.json) file as mentioned below.
+
+    - update the operator details.
+    - Database details. make sure the password, username and database name matches what was set in step 4.
+    - Bitcoin Node connection details. Only change the `btc_node_user`, `btc_node_pass` and `wallet_name`, and make sure that it matches what was set in step 1 and 2.
+    - Multisig signing wallet details. Only change `multisig_btc_user`, `multisig_btc_pass` and `multisig_signing_wallet_name`. If you are using the docker deployed btc node, username and password will be the same as step 1 and wallet name will be what you set up as `WALLET_OFFLINE` in step 2.
+    - In case you are using your btc wallet update the `btc_node_host` and `multisig_btc_node`.
+    - Update the password for the Ethwallet `eth_keystore_passphrase`.
+
+6. Start the Docker containers:
+   ```bash
+   docker-compose up
+   ```
+
+7. If starting with a new Ethereum wallet and BTC Wallet, the system will halt with an error `insufficient funds`. follow the below steps.
+   - Before the system exits it will display xpub/tpub keys from your offline signing wallets. copy the second last xpub/tup key. it will look like the key shared below, Please do not use the one provided below.
+
+      ```
+      [9f8c4e0f/84h/0h/0h]xpub6CnorznhQcJDGX47CjYLLoSouDq5ViucAUKknA2M4tDyLUXmTLNE3mzN9vgsQzrv3ZGF2dstz7KccK6oaan6UfUpeFxrEkNxY7pT7atpTpK/0/*
+      ``` 
+
+   - Before the system exits it will also display operators new ethereum address. Please use any [holesky faucet](https://cloud.google.com/application/web3/faucet/ethereum/holesky) to add funds to it.
+
+8. update the `btc_xpublic_key` field in the [config.json](https://github.com/motif-project/motif-node-docker/blob/btc-docker/configs/config.json)) file. Make sure the value is the same as what you get in step 7.
+
+9. Restart the system. 
+    ```bash
+    docker-compose up
+    ```
+
+---
+
 ## Configuration
 
 ### 1.1 BTC Offline wallet setup 
@@ -122,59 +175,6 @@ Please ensure that the system is properly configured before running the docker.
   - On Linux: Run `ip addr show docker0` to find the Docker-assigned IP for the local machine and use that ip as host in docker container.
 = **Bitcoin Wallet**:
   - All signet data including wallets is saved in `./btc/data/signet` folder. Do not replace or move this folder, otherwise Docker will start the IBD process again and will create new btc wallets.
-
----
-
-## Step by step guide to run the Application
-
-Please go through the below steps, after ensuring pre requisites are met.
-
-1. Start by updating the `rpcuser` and `rpcpassword` in the [bitcoin.conf](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/data/bitcoin.conf) file.
-
-2. If you want to change the wallet names update them in [btc_entrypoint.sh](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/btc_entrypoint.sh) file.
-    ```
-    WALLET_ONLINE="motifOnline"
-    WALLET_OFFLINE="motifOffline"
-    ```
-
-3. Depending on your machine's physical processor architecture, comment/uncomment the appropriate section in the bitcoin [Dockerfile](https://github.com/motif-project/motif-node-docker/blob/btc-docker/btc/Dockerfile#L8) file. 
-
-4. Update the Database username, password and database name in the [docker-compose](https://github.com/motif-project/motif-node-docker/blob/btc-docker/docker-compose.yml#L30) file.
-    ```
-    POSTGRES_USER: user1
-    POSTGRES_PASSWORD: password1
-    POSTGRES_DB: databasename
-    ```
-
-5. Update the [config.json](https://github.com/motif-project/motif-node-docker/blob/btc-docker/configs/config.json) file as mentioned below.
-
-    - update the operator details.
-    - Database details. make sure the password, username and database name matches what was set in step 4.
-    - Bitcoin Node connection details. Only change the `btc_node_user`, `btc_node_pass` and `wallet_name`, and make sure that it matches what was set in step 1 and 2.
-    - Multisig signing wallet details. Only change `multisig_btc_user`, `multisig_btc_pass` and `multisig_signing_wallet_name`. If you are using the docker deployed btc node, username and password will be the same as step 1 and wallet name will be what you set up as `WALLET_OFFLINE` in step 2.
-    - In case you are using your btc wallet update the `btc_node_host` and `multisig_btc_node`.
-    - Update the password for the Ethwallet `eth_keystore_passphrase`.
-
-6. Start the Docker containers:
-   ```bash
-   docker-compose up
-   ```
-
-7. If starting with a new Ethereum wallet and BTC Wallet, the system will halt with an error `insufficient funds`. follow the below steps.
-   - Before the system exits it will display xpub/tpub keys from your offline signing wallets. copy the second last xpub/tup key. it will look like the key shared below, Please do not use the one provided below.
-
-      ```
-      [9f8c4e0f/84h/0h/0h]xpub6CnorznhQcJDGX47CjYLLoSouDq5ViucAUKknA2M4tDyLUXmTLNE3mzN9vgsQzrv3ZGF2dstz7KccK6oaan6UfUpeFxrEkNxY7pT7atpTpK/0/*
-      ``` 
-
-   - Before the system exits it will also display operators new ethereum address. Please use any [holesky faucet](https://cloud.google.com/application/web3/faucet/ethereum/holesky) to add funds to it.
-
-8. update the `btc_xpublic_key` field in the [config.json](https://github.com/motif-project/motif-node-docker/blob/btc-docker/configs/config.json)) file. Make sure the value is the same as what you get in step 7.
-
-9. Restart the system. 
-    ```bash
-    docker-compose up
-    ```
 
 ---
 
