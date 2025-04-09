@@ -24,7 +24,7 @@ Before starting, ensure the following prerequisites are met:
 
 ---
 
-## Step by step guide to run the Application
+## Step by step guide.
 
 Please go through the below steps, after ensuring pre requisites are met.
 
