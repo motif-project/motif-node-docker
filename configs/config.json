@@ -1,6 +1,5 @@
 {
     "env": "dev",
-    
     "opr_name": "docker test",
     "opr_logo_uri": "https://www.example.com/logo.png",
     "opr_ip_address": "1.1.1.1",
@@ -11,13 +10,13 @@
     "DB_password": "password1",
     "DB_name": "databasename",
 
-    "btc_node_host": "bitcoin:38332",
+    "btc_node_host": "bitcoin.20:38332",
     "btc_node_user": "bitcoin",
     "btc_node_pass": "password_1",
     "btc_node_protocol": "http://",
     "fee_rate_adjustment": "10",
     "wallet_name": "motifOnline",
-    "btc_xpublic_key": "[9f8c4e0f/84h/0h/0h]xpub6CnorznhQcJDGX47CjYLLoSouDq5ViucAUKknA2M4tDyLUXmTLNE3mzN9vgsQzrv3ZGF2dstz7KccK6oaan6UfUpeFxrEkNxY7pT7atpTpK/0/*",
+    "btc_xpublic_key": "[aeaa97db/84h/1h/0h]tpubDDCZCPVcucMEp8VmiyT8d7kdZy4AhJHbdQrS7dM6DFywKLZ4efN8KWCBC38y4yN2SduRbA4A6JBAQ43vud9i2HxFPpEAx9Z1X2hwwneR3pD/0/*",
     
     "multisig_signing_wallet_name": "motifOffline",
     "multisig_btc_node": "bitcoin:38332",
@@ -25,8 +24,8 @@
     "multisig_btc_pass": "password_1",
     "multisig_btc_protocol": "http://",
 
-    "eth_rpc_host": "",
-    "eth_ws_host": "",
+    "eth_rpc_host": "https://yolo-little-fire.ethereum-holesky.quiknode.pro/86056956d0dbb1cc5bddc29d08ac83ad89112415/",
+    "eth_ws_host": "wss://yolo-little-fire.ethereum-holesky.quiknode.pro/86056956d0dbb1cc5bddc29d08ac83ad89112415/",
     "eth_keystore_dir": "../wallet/keystore",
     "eth_keystore_passphrase": "password_1",
     "opr_metadata_uri": "",
