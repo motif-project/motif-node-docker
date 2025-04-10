@@ -34,8 +34,8 @@ These steps are for operators new to Bitcoin and Motif. This helps reduce fricti
    - Set your `opr_name`, `opr_logo_uri`, and `opr_ip_address`
    - Set your Ethereum RPC/WebSocket endpoints:
      ```json
-     "eth_rpc_host": "https://yolo-little-fire.ethereum-holesky.quiknode.pro/86056956d0dbb1cc5bddc29d08ac83ad89112415/",
-     "eth_ws_host": "wss://yolo-little-fire.ethereum-holesky.quiknode.pro/86056956d0dbb1cc5bddc29d08ac83ad89112415/"
+     "eth_rpc_host": "",
+     "eth_ws_host": ""
      ```
 
 3. Start the containers:
@@ -43,7 +43,7 @@ These steps are for operators new to Bitcoin and Motif. This helps reduce fricti
    docker compose up
    ```
 
-   - This will spin up three containers: `motif`, `postgres-container`, and `bitcoin`.
+   - This will spin up three services: `motif`, `postgres-container`, and `bitcoin`.
    - `postgres-container` will initialize first. Once you see `database system is ready to accept connections`, the system waits 1 minute before initializing the Bitcoin container.
    - The system will create new BTC and Ethereum wallets and attempt to register your operator.
 
@@ -51,12 +51,14 @@ These steps are for operators new to Bitcoin and Motif. This helps reduce fricti
    - Copy the second-last xpub/tpub key (`btc_xpublic_key`) and update it in [config.json](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.json).
    - Copy the new Ethereum address and use a [Holesky faucet](https://cloud.google.com/application/web3/faucet/ethereum/holesky) to fund it.
 
+   ![Reference](https://github.com/motif-project/motif-node-docker/blob/main/docs/btc_xpublic_key.png, "reference Screenshot")
+
 5. Restart the stack:
    ```bash
    docker compose down
    docker compose up
    ```
-   - You'll again see the wallet info. `motif` will register your operator after a 10-minute delay (Bitcoin node syncing).
+   - You'll again see the wallet info. `motif` will register your operator after a 5-minute delay (Bitcoin Node starting).
 
 ---
 
