@@ -1,8 +1,8 @@
 # Motif Deployment Guide
 
-This guide provides comprehensive instructions for deploying the Motif application using Docker and Docker Compose. Motif testnet is based on Holesky (Ethereum testnet) and Signet (Bitcoin testnet).
+This guide provides comprehensive instructions for deploying the Motif application using Docker and Docker Compose. It also takes care of **registering the operator with Motif** automatically at the end of the deployment. Motif testnet is based on Holesky (Ethereum testnet) and Signet (Bitcoin testnet).
 
-The Operator Node communicates with Motif core contracts deployed on Holesky. [Here](https://github.com/Layr-Labs/eigenlayer-contracts/tree/testnet-holesky?tab=readme-ov-file#current-testnet-deployment) are the latest contract addresses and further details on these contracts.
+The Operator Node communicates with Motif core contracts deployed on Holesky. Here are the latest contract addresses and further details on these contracts.
 
 This setup runs a Bitcoin Signet node inside a container.
 
@@ -59,6 +59,10 @@ These steps are for operators new to Bitcoin and Motif. This helps reduce fricti
    docker compose up
    ```
    - You'll again see the wallet info. `motif` will register your operator after a 5-minute delay (Bitcoin Node starting).
+
+6. Verify operator registration:
+   - Visit https://motif-unlock.vercel.app/operators
+   - Search for the name you set in `opr_name` in your `config.json` file to confirm that your operator has been successfully registered.
 
 ---
 
