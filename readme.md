@@ -51,7 +51,7 @@ These steps are for operators new to Bitcoin and Motif. This helps reduce fricti
    - Copy the second-last xpub/tpub key (`btc_xpublic_key`) and update it in [config.json](https://github.com/motif-project/motif-node-docker/blob/main/configs/config.json).
    - Copy the new Ethereum address and use a [Holesky faucet](https://cloud.google.com/application/web3/faucet/ethereum/holesky) to fund it.
 
-   ![Reference](https://github.com/motif-project/motif-node-docker/blob/main/docs/btc_xpublic_key.png, "reference Screenshot")
+   ![Reference](https://github.com/motif-project/motif-node-docker/blob/main/docs/btc_xpublic_key.png  "reference Screenshot")
 
 5. Restart the stack:
    ```bash
